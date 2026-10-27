@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Pemesanan Tiket Konser</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f7;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px 12px 40px;
+      color: #1a1a1a;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .header {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    .banner {
+      position: relative;
+      height: 180px;
+      background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 50%, #7c3aed 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .banner-label {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .banner h1 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      position: relative;
+    }
+
+    .banner p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 4px;
+      position: relative;
+    }
+
+    .content {
+      padding: 20px 20px 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #111;
+      background: #fafafa;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #7c3aed;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .name-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .phone-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phone-row input:first-child {
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .phone-row .dash {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .seat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .seat-option {
+      position: relative;
+    }
+
+    .seat-option input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .seat-option span {
+      display: block;
+      padding: 12px 10px;
+      text-align: center;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .seat-option input:checked + span {
+      border-color: #7c3aed;
+      background: #f5f3ff;
+      color: #6d28d9;
+      font-weight: 600;
+    }
+
+    #otherInput {
+      margin-top: 8px;
+      display: none;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .ticket-preview {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 20px 0 8px;
+    }
+
+    .ticket-preview .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .ticket-preview .row:last-child {
+      margin-bottom: 0;
+    }
+
+    .ticket-preview .label {
+      color: #6b7280;
+    }
+
+    .ticket-preview .value {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .ticket-preview .price {
+      color: #7c3aed;
+      font-size: 16px;
+    }
+
+    .footer {
+      padding: 16px 20px 24px;
+      background: #fff;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-submit:hover {
+      background: #6d28d9;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit svg {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="header">
+      <div class="back">←</div>
+      <div class="header-title">Pemesanan Tiket</div>
+    </div>
+
+    <div class="banner">
+      <div class="banner-label">Konser</div>
+      <h1>Tiket ke Konser Terhebat Yang Pernah Ada!</h1>
+      <p>Dapatkan tiket hari ini sebelum terlambat!</p>
+    </div>
+
+    <div class="content">
+      <form id="ticketForm" onsubmit="handleSubmit(event)">
+
+        <div class="form-group">
+          <label>Nama</label>
+          <div class="name-row">
+            <div>
+              <input type="text" name="nama_depan" placeholder="Nama Depan" required>
+            </div>
+            <div>
+              <input type="text" name="nama_belakang" placeholder="Nama Belakang" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" name="email" placeholder="contoh: nama@contoh.com" required>
+          <div class="hint">contoh@contoh.com</div>
+        </div>
+
+        <div class="form-group">
+          <label>Nomor Telepon</label>
+          <div class="phone-row">
+            <input type="tel" name="kode_area" placeholder="Kode">
+            <span class="dash">-</span>
+            <input type="tel" name="nomor_telepon" placeholder="Nomor Telepon" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Pilihan tempat duduk</label>
+          <div class="seat-grid">
+            <label class="seat-option">
+              <input type="radio" name="tempat_duduk" value="panggung_depan" required onchange="toggleOther(this)">
+              <span>Panggung Depan</span>
+            </label>
+            <label class="seat-option">
+              <input type="radio" name="tempat_duduk" value="tengah" onchange="toggleOther(this)">
+              <span>Tengah</span>
+            </label>
+            <label class="seat-option">
+              <input type="radio" name="tempat_duduk" value="balkon" onchange="toggleOther(this)">
+              <span>Balkon</span>
+            </label>
+            <label class="seat-option">
+              <input type="radio" name="tempat_duduk" value="lainnya" onchange="toggleOther(this)">
+              <span>Lainnya</span>
+            </label>
+          </div>
+          <input type="text" name="lainnya_detail" id="otherInput" placeholder="Sebutkan tempat duduk...">
+        </div>
+
+        <div class="form-group">
+          <label>Jumlah Tiket</label>
+          <input type="number" name="jumlah_tiket" placeholder="contoh: 2" min="1" max="20" required style="max-width: 140px;">
+        </div>
+
+        <div class="form-group">
+          <label>Ada pertanyaan?</label>
+          <textarea name="pertanyaan" placeholder="Ketik di sini..."></textarea>
+        </div>
+
+        <div class="ticket-preview">
+          <div class="row">
+            <span class="label">Event</span>
+            <span class="value">Konser Terhebat</span>
+          </div>
+          <div class="row">
+            <span class="label">Lokasi</span>
+            <span class="value">Jakarta</span>
+          </div>
+          <div class="row">
+            <span class="label">Harga mulai</span>
+            <span class="value price">Rp 450.000</span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer">
+      <button type="submit" form="ticketForm" class="btn-submit">
+        Dapatkan Tiket!
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function toggleOther(el) {
+      const otherInput = document.getElementById('otherInput');
+      if (el.value === 'lainnya') {
+        otherInput.style.display = 'block';
+        otherInput.required = true;
+      } else {
+        otherInput.style.display = 'none';
+        otherInput.required = false;
+        otherInput.value = '';
+      }
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      alert(
+        'Terima kasih! Data pemesanan Anda:\n\n' +
+        'Nama: ' + data.nama_depan + ' ' + data.nama_belakang + '\n' +
+        'Email: ' + data.email + '\n' +
+        'Telepon: ' + (data.kode_area || '') + '-' + data.nomor_telepon + '\n' +
+        'Tempat duduk: ' + data.tempat_duduk + (data.lainnya_detail ? ' (' + data.lainnya_detail + ')' : '') + '\n' +
+        'Jumlah tiket: ' + data.jumlah_tiket + '\n' +
+        (data.pertanyaan ? 'Pertanyaan: ' + data.pertanyaan : '')
+      );
+    }
+  </script>
+</body>
+</html>
